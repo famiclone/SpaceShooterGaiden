@@ -22,8 +22,8 @@
 
 ### TODO:
 
-[ ] Draw sprite
-[ ] Basic handling
-[ ] AABB Collision
-[ ] Layer system (bg, fg, entities, fx)
-[ ] Render map from png image (2 or more layers: bg, ..., fg)
+- [ ] Draw sprite
+- [ ] Basic handling
+- [ ] AABB Collision
+- [ ] Layer system (bg, fg, entities, fx)
+- [ ] Render map from png image (2 or more layers: bg, ..., fg)
