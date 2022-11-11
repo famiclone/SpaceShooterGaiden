@@ -1,3 +1,4 @@
+import  AssetLoader  from "./assetloader";
 import Logger from "./logger";
 import Renderer from "./renderer";
 
@@ -12,29 +13,43 @@ enum GameState {
 
 export default class Game {
   logger: Logger;
-  renderer: Renderer;
+  renderer: Renderer = new Renderer();
+  assetLoader: AssetLoader = new AssetLoader();
+
   lastTime: number = 0;
 
   constructor() {
     this.logger = new Logger();
     this.logger.info("Game started");
 
-    this.renderer = new Renderer();
+    // @ts-ignore
+    window["game"] = this;
   }
 
   update(ts: number) {
     const dt = ts - this.lastTime;
 
     this.lastTime = ts;
-
   }
 
-  render() {}
+  render() {
+    this.renderer.drawText(
+      "SPACE SHOOTER GAIDEN V0.1",
+      this.assetLoader.list["spritesheet"] as HTMLImageElement,
+      this.assetLoader.list["spritesheet_map"]
+    );
+  }
 
   run() {
     this.logger.info("Game running");
 
-    this.loop();
+    this.assetLoader
+      .load(["assets/spritesheet.png", "assets/spritesheet_map.json"])
+      .then(() => {
+        this.logger.info("Assets loaded");
+
+        this.loop();
+      });
   }
 
   loop() {
