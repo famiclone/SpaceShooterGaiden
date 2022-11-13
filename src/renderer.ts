@@ -4,6 +4,7 @@ export default class Renderer {
   logger: Logger = new Logger();
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
+  image: HTMLImageElement = new Image();
   windowSize: { width: number; height: number } = {
     width: 256,
     height: 240,
@@ -38,6 +39,29 @@ export default class Renderer {
     );
 
     this.ctx.imageSmoothingEnabled = false;
+  }
+
+  drawSprite(
+    tileX: number,
+    tileY: number,
+    w: number,
+    h: number,
+    x: number,
+    y: number,
+    sizeX: number,
+    sizeY: number
+  ) {
+    this.ctx.drawImage(
+      this.image,
+      tileX,
+      tileY,
+      w,
+      h,
+      x,
+      y,
+      sizeX,
+      sizeY
+    );
   }
 
   drawText(text: string, spriteSheet: HTMLImageElement, spriteSheetMap: any) {
