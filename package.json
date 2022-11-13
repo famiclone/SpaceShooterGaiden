@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/famiclone/SpaceShooterGaiden#readme",
   "devDependencies": {
+    "terser-webpack-plugin": "^5.3.6",
     "ts-loader": "^9.4.1",
     "typescript": "^4.8.4",
     "webpack": "^5.75.0",
