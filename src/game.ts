@@ -11,6 +11,8 @@ enum GameState {
   GAME_OVER,
   OPTIONS,
   LOADING,
+  FLYING,
+  DISEMBARK,
 }
 
 export default class Game {
@@ -44,14 +46,13 @@ export default class Game {
   render() {
     this.renderer.clear();
 
-    this.renderer.drawText(
-      "SPACE SHOOTER GAIDEN V0.1",
-      this.assetLoader.list["spritesheet"] as HTMLImageElement,
-      this.assetLoader.list["spritesheet_map"]
-    );
+    //this.renderer.drawText(
+    //  "SPACE SHOOTER GAIDEN V0.1",
+    //  this.assetLoader.list["spritesheet"] as HTMLImageElement,
+    //  this.assetLoader.list["spritesheet_map"]
+    //);
 
     this.player.render(this.renderer);
-
   }
 
   run() {
