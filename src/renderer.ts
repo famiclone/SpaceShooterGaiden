@@ -1,4 +1,5 @@
 import Logger from "./logger";
+import Vector2 from "./vector2";
 
 export default class Renderer {
   logger: Logger = new Logger();
@@ -9,7 +10,9 @@ export default class Renderer {
     width: 256,
     height: 240,
   };
-  spriteSheetMap: {[key: string]: {x: number, y: number, w: number, h: number}} = {};
+  spriteSheetMap: {
+    [key: string]: { x: number; y: number; w: number; h: number };
+  } = {};
 
   constructor() {
     this.canvas = document.createElement("canvas");
@@ -17,6 +20,7 @@ export default class Renderer {
     this.canvas.height = window.innerHeight;
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.ctx.imageSmoothingEnabled = false;
+    //this.ctx.translate(0.5, 0.5);
 
     this.ctx.scale(
       this.canvas.width / this.windowSize.width,
@@ -40,6 +44,11 @@ export default class Renderer {
     );
 
     this.ctx.imageSmoothingEnabled = false;
+  }
+
+  drawTile(id: string, pos: Vector2) {
+    const { x, y, w, h } = this.spriteSheetMap[id];
+    this.drawSprite(x, y, w, h, pos.x, pos.y, w + 1, h + 1);
   }
 
   drawSprite(

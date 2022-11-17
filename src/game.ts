@@ -107,6 +107,10 @@ export default class Game {
           "spritesheet"
         ] as HTMLImageElement;
 
+        this.renderer.spriteSheetMap = this.assetLoader.list[
+          "spritesheet_map"
+        ] as any;
+
         this.uiRenderer.image = this.assetLoader.list[
           "spritesheet"
         ] as HTMLImageElement;

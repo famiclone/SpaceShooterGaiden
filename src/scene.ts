@@ -1,8 +1,16 @@
 import GameObject from "./gameobject";
 import Player from "./player";
 import Renderer from "./renderer";
+import Vector2 from "./vector2";
 
-const tiles = ["yellowgreen", "pink"];
+const tiles = [
+  {
+    id: "grass",
+  },
+  {
+    id: "grass2",
+  }
+];
 
 export default class Scene extends GameObject {
   player: Player | null = null;
@@ -27,12 +35,9 @@ export default class Scene extends GameObject {
       for (let y = 0; y < this.size.y / tileSize; y++) {
         const tile = tiles[this.map[x + y * (this.size.x / tileSize)]];
 
-        renderer.ctx.fillStyle = tile;
-        renderer.ctx.fillRect(
-          this.pos.x + x * tileSize,
-          this.pos.y + y * tileSize,
-          tileSize,
-          tileSize
+        renderer.drawTile(
+          tile.id,
+          new Vector2(this.pos.x + x * tileSize, this.pos.y + y * tileSize)
         );
       }
     }

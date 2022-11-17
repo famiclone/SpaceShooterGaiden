@@ -1,4 +1,5 @@
 import Renderer from "./renderer";
+import state from "./state";
 import Vector2 from "./vector2";
 
 export default class GameObject {
@@ -31,13 +32,15 @@ export default class GameObject {
   }
 
   debugDraw(renderer: Renderer, info: boolean = false) {
-    renderer.ctx.strokeStyle = "magenta";
-    renderer.ctx.strokeRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
+    if (state.debug) {
+      renderer.ctx.strokeStyle = "magenta";
+      renderer.ctx.strokeRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
 
-    if (info) {
-      renderer.ctx.strokeStyle = "green";
-      renderer.ctx.font = "8px monospace";
-      renderer.ctx.strokeText(this.id, this.pos.x, this.pos.y - 4);
+      if (info) {
+        renderer.ctx.strokeStyle = "green";
+        renderer.ctx.font = "8px monospace";
+        renderer.ctx.strokeText(this.id, this.pos.x, this.pos.y - 4);
+      }
     }
   }
 
