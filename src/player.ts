@@ -10,6 +10,7 @@ const weaponTypes = {
     speed: 5,
     color: "red",
     size: [2, 2],
+    rechargeTime: 50,
   },
 };
 
@@ -45,17 +46,20 @@ export class Bullet extends GameObject {
   }
 
   render(renderer: Renderer) {
+    renderer.ctx.save();
     this.debugDraw(renderer);
 
     renderer.ctx.fillStyle = weaponTypes[this.type].color;
 
     renderer.ctx.fillRect(this.pos.x, this.pos.y, 2, 2);
+    renderer.ctx.restore();
   }
 }
 
 export default class Player extends GameObject {
   stats: Stats = new Stats();
   bullets: Bullet[] = [];
+  recharged: number = 0;
 
   constructor() {
     super();
@@ -66,25 +70,24 @@ export default class Player extends GameObject {
     this.speed = 2;
   }
 
-  fire() {
-    const leftGunPos = new Vector2(this.pos.x, this.pos.y + 16);
-    const rightGunPos = new Vector2(this.pos.x + 14, this.pos.y + 16);
+  fire(direction: Vector2, dt: number) {
+    if (this.recharged > weaponTypes.basic.rechargeTime) {
+      let leftGunPos = new Vector2(this.pos.x, this.pos.y + 16);
+      let rightGunPos = new Vector2(this.pos.x + 14, this.pos.y + 16);
 
-    const leftBullet = new Bullet(
-      leftGunPos,
-      new Vector2(0, -1),
-      WeaponType.Basic
-    );
-    this.bullets.push(leftBullet);
+      if (direction.y === 0) {
+        leftGunPos = new Vector2(this.pos.x, this.pos.y);
+        rightGunPos = new Vector2(this.pos.x, this.pos.y + 14);
+      }
 
-    const bullet = new Bullet(
-      rightGunPos,
-      new Vector2(0, -1),
-      WeaponType.Basic
-    );
-    this.bullets.push(bullet);
+      const leftBullet = new Bullet(leftGunPos, direction, WeaponType.Basic);
+      this.bullets.push(leftBullet);
 
-    console.log(this.bullets);
+      const bullet = new Bullet(rightGunPos, direction, WeaponType.Basic);
+      this.bullets.push(bullet);
+    }
+
+    this.recharged = 0;
   }
 
   move(direction: Vector2) {
@@ -99,14 +102,7 @@ export default class Player extends GameObject {
 
     const distance = 50;
 
-    if (
-      newPos.clone().add(new Vector2(this.size.x, distance)).x >=
-        this.parent!.size.x + this.parent!.pos.x ||
-      newPos.clone().add(new Vector2(0, this.size.y)).y >=
-        this.parent!.size.y + this.parent!.pos.y ||
-      newPos.x <= this.parent!.pos.x ||
-      newPos.y <= this.parent!.pos.y
-    ) {
+    if (this.isOutOfParent(newPos)) {
       return;
     } else {
       this.pos = newPos;
@@ -140,12 +136,15 @@ export default class Player extends GameObject {
   }
 
   update(dt: number) {
+    this.recharged += dt;
+
     this.bullets.forEach((bullet) => {
       bullet.update(dt);
     });
   }
 
   render(renderer: Renderer) {
+    renderer.ctx.save();
     renderer.drawSprite(0, 24, 16, 16, this.pos.x, this.pos.y, 16, 16);
 
     this.bullets.forEach((bullet) => {
@@ -157,5 +156,6 @@ export default class Player extends GameObject {
         !isOutOfScreen(bullet, renderer.canvas.width, renderer.canvas.height)
     );
     this.debugDraw(renderer);
+    renderer.ctx.restore();
   }
 }

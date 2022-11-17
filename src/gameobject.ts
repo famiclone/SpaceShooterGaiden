@@ -53,6 +53,17 @@ export default class GameObject {
     });
     this.debugDraw(renderer);
   }
+
+  isOutOfParent(pos: Vector2) {
+    return (
+      pos.clone().add(new Vector2(this.size.x, 0)).x >=
+        this.parent!.size.x + this.parent!.pos.x ||
+      pos.clone().add(new Vector2(0, this.size.y)).y >=
+        this.parent!.size.y + this.parent!.pos.y ||
+      pos.x <= this.parent!.pos.x ||
+      pos.y <= this.parent!.pos.y
+    );
+  }
 }
 
 export class Stats {

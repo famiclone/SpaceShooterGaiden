@@ -1,11 +1,9 @@
 import AssetLoader from "./assetloader";
 import Controller from "./controller";
-import GameObject from "./gameobject";
+import Level from "./level";
 import Logger from "./logger";
-import Player from "./player";
 import Renderer from "./renderer";
 import Scene from "./scene";
-import IntroScene from "./scenes/intro-scene";
 import state from "./state";
 import UIRenderer from "./ui-renderer";
 import Vector2 from "./vector2";
@@ -27,8 +25,7 @@ export default class Game {
   uiRenderer: UIRenderer = new UIRenderer();
   assetLoader: AssetLoader = new AssetLoader();
   controller: Controller;
-  player: Player;
-  scene: GameObject = new Scene();
+  level: Level = new Level();
   currentState: GameState = GameState.LOADING;
 
   lastTime: number = 0;
@@ -36,7 +33,6 @@ export default class Game {
   constructor() {
     this.logger = new Logger();
     this.logger.info("Game started");
-    this.player = new Player();
     this.controller = new Controller(this);
 
     // @ts-ignore
@@ -47,28 +43,40 @@ export default class Game {
     const dt = ts - this.lastTime;
 
     if (this.controller.keyIsDown("KeyW")) {
-      this.player.move(new Vector2(0, -1));
+      this.level.player.move(new Vector2(0, -1));
     }
 
     if (this.controller.keyIsDown("KeyA")) {
-      this.player.move(new Vector2(-1, 0));
+      this.level.player.move(new Vector2(-1, 0));
     }
 
     if (this.controller.keyIsDown("KeyS")) {
-      this.player.move(new Vector2(0, 1));
+      this.level.player.move(new Vector2(0, 1));
     }
 
     if (this.controller.keyIsDown("KeyD")) {
-      this.player.move(new Vector2(1, 0));
+      this.level.player.move(new Vector2(1, 0));
     }
 
-    if (this.controller.keyIsDown("Space")) {
-      this.player.fire();
+    if (this.controller.keyIsDown("KeyI")) {
+      this.level.player.fire(new Vector2(0, -1), dt);
+    }
+
+    if (this.controller.keyIsDown("KeyJ")) {
+      this.level.player.fire(new Vector2(-1, 0), dt);
+    }
+
+    if (this.controller.keyIsDown("KeyK")) {
+      this.level.player.fire(new Vector2(0, 1), dt);
+    }
+
+    if (this.controller.keyIsDown("KeyL")) {
+      this.level.player.fire(new Vector2(1, 0), dt);
     }
 
     this.lastTime = ts;
 
-    this.scene.update(dt);
+    this.level.update(dt);
   }
 
   changeState(state: GameState) {
@@ -78,25 +86,17 @@ export default class Game {
   render() {
     this.renderer.clear();
     this.uiRenderer.clear();
-    //this.uiRenderer.progress(
-    //  this.player.stats.health,
-    //  this.renderer.windowSize.width - 28,
-    //  8
-    //);
+    this.uiRenderer.progress(
+      this.level.player.stats.health,
+      this.renderer.windowSize.width - 28,
+      8
+    );
 
-    this.scene.render(this.renderer);
+    this.level.render(this.renderer);
   }
 
   run() {
     this.logger.info("Game running");
-
-    const levelWidth = 512;
-    const levelHeight = 512;
-
-    this.scene.size = new Vector2(levelWidth, levelHeight);
-    this.scene.pos = new Vector2(-200, -200);
-
-    this.scene.addChild(this.player);
 
     this.assetLoader
       .load(["assets/spritesheet.png", "assets/spritesheet_map.json"])
