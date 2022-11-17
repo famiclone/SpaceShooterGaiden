@@ -9,6 +9,7 @@ export default class Renderer {
     width: 256,
     height: 240,
   };
+  spriteSheetMap: {[key: string]: {x: number, y: number, w: number, h: number}} = {};
 
   constructor() {
     this.canvas = document.createElement("canvas");
@@ -51,33 +52,7 @@ export default class Renderer {
     sizeX: number,
     sizeY: number
   ) {
-    this.ctx.drawImage(
-      this.image,
-      tileX,
-      tileY,
-      w,
-      h,
-      x,
-      y,
-      sizeX,
-      sizeY
-    );
-  }
-
-  drawText(text: string, spriteSheet: HTMLImageElement, spriteSheetMap: any) {
-    text.split("").forEach((char: string, index: number) => {
-      this.ctx.drawImage(
-        spriteSheet,
-        spriteSheetMap[char].x,
-        spriteSheetMap[char].y,
-        spriteSheetMap[char].w,
-        spriteSheetMap[char].h,
-        index * 8,
-        0,
-        8,
-        8
-      );
-    });
+    this.ctx.drawImage(this.image, tileX, tileY, w, h, x, y, sizeX, sizeY);
   }
 
   clear() {

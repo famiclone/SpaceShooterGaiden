@@ -10,8 +10,7 @@ export default class GameObject {
   speed: number = 1;
   children: GameObject[] = [];
   parent: GameObject | null = null;
-
-  constructor() {}
+  id: string = Math.random().toString(16).substring(0, 5);
 
   addChild(child: GameObject) {
     if (this.children.includes(child)) {
@@ -31,6 +30,17 @@ export default class GameObject {
     this.children = this.children.filter((c) => c !== child);
   }
 
+  debugDraw(renderer: Renderer, info: boolean = false) {
+    renderer.ctx.strokeStyle = "magenta";
+    renderer.ctx.strokeRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
+
+    if (info) {
+      renderer.ctx.strokeStyle = "green";
+      renderer.ctx.font = "8px monospace";
+      renderer.ctx.strokeText(this.id, this.pos.x, this.pos.y - 4);
+    }
+  }
+
   update(dt: number) {
     this.children.forEach((child) => {
       child.update(dt);
@@ -41,6 +51,7 @@ export default class GameObject {
     this.children.forEach((child) => {
       child.render(renderer);
     });
+    this.debugDraw(renderer);
   }
 }
 
