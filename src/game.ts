@@ -3,12 +3,11 @@ import Controller from "./controller";
 import Level from "./level";
 import Logger from "./logger";
 import Renderer from "./renderer";
-import Scene from "./scene";
 import state from "./state";
 import UIRenderer from "./ui-renderer";
 import Vector2 from "./vector2";
 
-enum GameState {
+export enum GameState {
   MENU,
   PLAYING,
   PAUSED,
@@ -26,7 +25,7 @@ export default class Game {
   assetLoader: AssetLoader = new AssetLoader();
   controller: Controller;
   level: Level = new Level();
-  currentState: GameState = GameState.LOADING;
+  currentState: GameState = GameState.DISEMBARK
 
   lastTime: number = 0;
 
@@ -42,20 +41,37 @@ export default class Game {
   update(ts: number) {
     const dt = ts - this.lastTime;
 
-    if (this.controller.keyIsDown("KeyW")) {
+    if (this.currentState === GameState.FLYING) {
       this.level.player.move(new Vector2(0, -1));
-    }
 
+      if (this.controller.keyIsDown("KeyA")) {
+        this.level.player.move(new Vector2(-1, 0));
+      }
+
+      if (this.controller.keyIsDown("KeyD")) {
+        this.level.player.move(new Vector2(1, 0));
+      }
+
+      if (this.controller.keyIsDown("Space")) {
+        this.level.player.fire(new Vector2(0, -1), dt);
+      }
+
+      return false;
+    }
     if (this.controller.keyIsDown("KeyA")) {
       this.level.player.move(new Vector2(-1, 0));
     }
 
-    if (this.controller.keyIsDown("KeyS")) {
-      this.level.player.move(new Vector2(0, 1));
-    }
-
     if (this.controller.keyIsDown("KeyD")) {
       this.level.player.move(new Vector2(1, 0));
+    }
+
+    if (this.controller.keyIsDown("KeyW")) {
+      this.level.player.move(new Vector2(0, -1));
+    }
+
+    if (this.controller.keyIsDown("KeyS")) {
+      this.level.player.move(new Vector2(0, 1));
     }
 
     if (this.controller.keyIsDown("KeyI")) {
