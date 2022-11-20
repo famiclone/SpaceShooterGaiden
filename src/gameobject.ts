@@ -69,12 +69,3 @@ export default class GameObject {
   }
 }
 
-export class Stats {
-  health: number = 100;
-  exp: number = 0;
-  level: number = 1;
-  damage: number = 10;
-  speed: number = 1;
-  defense: number = 1;
-  constructor() {}
-}

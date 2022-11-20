@@ -1,4 +1,5 @@
 import Logger from "./logger";
+import state from "./state";
 import Vector2 from "./vector2";
 
 export default class Renderer {
@@ -7,8 +8,8 @@ export default class Renderer {
   ctx: CanvasRenderingContext2D;
   image: HTMLImageElement = new Image();
   windowSize: { width: number; height: number } = {
-    width: 256,
-    height: 240,
+    width: state.windowResolution.width,
+    height: state.windowResolution.height,
   };
   spriteSheetMap: {
     [key: string]: { x: number; y: number; w: number; h: number };
@@ -20,7 +21,6 @@ export default class Renderer {
     this.canvas.height = window.innerHeight;
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.ctx.imageSmoothingEnabled = false;
-    //this.ctx.translate(0.5, 0.5);
 
     this.ctx.scale(
       this.canvas.width / this.windowSize.width,
