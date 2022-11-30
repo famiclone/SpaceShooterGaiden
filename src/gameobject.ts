@@ -12,6 +12,8 @@ export default class GameObject {
   speed: number = 1;
   children: GameObject[] = [];
   parent: GameObject | null = null;
+  frame: number = 0;
+  lastTime: number = 0;
   id: string = Math.random().toString(16).substring(0, 5);
 
   constructor(pos: Vector2, id: string) {

@@ -10,15 +10,13 @@ type State = {
   };
 };
 
-const SCALE = 2;
-
 const state: State = {
   game: null,
   moveDisabled: false,
   debug: process.env.NODE_ENV === "development",
   windowResolution: {
-    width: 255 ,
-    height: 240 
+    width: 255,
+    height: 240,
   },
 };
 

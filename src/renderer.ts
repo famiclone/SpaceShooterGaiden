@@ -12,15 +12,21 @@ export default class Renderer {
     height: state.windowResolution.height,
   };
   spriteSheetMap: {
-    [key: string]: { x: number; y: number; w: number; h: number };
+    [key: string]: {
+      x: number;
+      y: number;
+      w: number;
+      h: number;
+      frames: { x: number; y: number; w: number; h: number }[];
+    };
   } = {};
 
   constructor() {
     this.canvas = document.createElement("canvas");
     //this.canvas.width = window.innerWidth;
     //this.canvas.height = window.innerHeight;
-    this.canvas.width = 255 * 2;
-    this.canvas.height = 240 * 2;
+    this.canvas.width = 255 * 3;
+    this.canvas.height = 240 * 3;
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.ctx.imageSmoothingEnabled = false;
 
@@ -37,8 +43,8 @@ export default class Renderer {
   }
 
   resize() {
-    this.canvas.width = 255 * 2
-    this.canvas.height = 240 * 2
+    this.canvas.width = 255 * 3;
+    this.canvas.height = 240 * 3;
 
     this.ctx.scale(
       this.canvas.width / this.windowSize.width,
