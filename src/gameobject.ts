@@ -8,10 +8,16 @@ export default class GameObject {
   vel: Vector2 = new Vector2(0, 0);
   size: Vector2 = new Vector2(8, 8);
   rotation: number = 0;
+  spriteDirection: Vector2 = new Vector2(0, 0);
   speed: number = 1;
   children: GameObject[] = [];
   parent: GameObject | null = null;
   id: string = Math.random().toString(16).substring(0, 5);
+
+  constructor(pos: Vector2, id: string) {
+    this.pos = pos.clone().add(this.parent?.pos || new Vector2(0, 0));
+    this.id = id;
+  }
 
   addChild(child: GameObject) {
     if (this.children.includes(child)) {
@@ -68,4 +74,3 @@ export default class GameObject {
     );
   }
 }
-

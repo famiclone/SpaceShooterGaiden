@@ -1,4 +1,3 @@
-import { GameState } from "./game";
 import GameObject from "./gameobject";
 import Person from "./person";
 import Player from "./player";
@@ -8,9 +7,11 @@ import state from "./state";
 import Vector2 from "./vector2";
 
 const levelData = {
-  size: new Vector2(16 * 32, 16 * 10),
+  size: new Vector2(16 * 20, 16 * 20),
   pos: new Vector2(-0, -0),
-  map: function() { return Array(this.size.x * this.size.y).fill(0)}
+  map: function () {
+    return Array(this.size.x * this.size.y).fill(0);
+  },
 };
 
 export default class Level extends GameObject {
@@ -18,7 +19,7 @@ export default class Level extends GameObject {
   player: Player;
 
   constructor() {
-    super();
+    super(new Vector2(0, 0), "level");
 
     this.player = new Player(
       new Vector2(
@@ -31,7 +32,10 @@ export default class Level extends GameObject {
 
     for (let i = 0; i < 10; i++) {
       const enemy = new Person(
-        new Vector2(Math.random() * 100, Math.random() * 100),
+        new Vector2(
+          this.pos.x + Math.random() * 100,
+          this.pos.y + Math.random() * 100
+        ),
         `enemy_${i}`
       );
       enemy.id = "enemy";

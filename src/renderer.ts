@@ -17,8 +17,10 @@ export default class Renderer {
 
   constructor() {
     this.canvas = document.createElement("canvas");
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
+    //this.canvas.width = window.innerWidth;
+    //this.canvas.height = window.innerHeight;
+    this.canvas.width = 255 * 2;
+    this.canvas.height = 240 * 2;
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.ctx.imageSmoothingEnabled = false;
 
@@ -35,8 +37,8 @@ export default class Renderer {
   }
 
   resize() {
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
+    this.canvas.width = 255 * 2
+    this.canvas.height = 240 * 2
 
     this.ctx.scale(
       this.canvas.width / this.windowSize.width,

@@ -30,7 +30,25 @@ export default class UIRenderer extends Renderer {
     this.ctx.fillRect(x, y, percent / width, 4);
   }
 
-  text(text: string, x: number, y: number) {
+  text(text: string, x: number, y: number, blink = false) {
+    if (blink) {
+      if (Math.floor(Date.now() / 300) % 2 === 0) {
+        text.split("").forEach((char: string, index: number) => {
+          this.ctx.drawImage(
+            this.image,
+            this.spriteSheetMap[char].x,
+            this.spriteSheetMap[char].y,
+            this.spriteSheetMap[char].w,
+            this.spriteSheetMap[char].h,
+            index * 8 + x,
+            y,
+            8,
+            8
+          );
+        });
+      }
+    } else {
+
     text.split("").forEach((char: string, index: number) => {
       this.ctx.drawImage(
         this.image,
@@ -38,11 +56,12 @@ export default class UIRenderer extends Renderer {
         this.spriteSheetMap[char].y,
         this.spriteSheetMap[char].w,
         this.spriteSheetMap[char].h,
-        index * 8,
-        0,
+        index * 8 + x,
+        y,
         8,
         8
       );
     });
+    }
   }
 }

@@ -23,10 +23,10 @@ export default class Scene extends GameObject {
   map: number[] = [];
 
   constructor(levelData: any, public player: Player) {
-    super();
+    super(levelData.pos, "scene");
     this.size = levelData.size;
     this.pos = levelData.pos;
-    this.map = levelData.map()
+    this.map = levelData.map();
 
     this.addChild(player);
 
@@ -36,24 +36,39 @@ export default class Scene extends GameObject {
   }
 
   getTile(pos: Vector2) {
-    const tileSize = 8;
-    const x = Math.trunc(pos.x / tileSize);
-    const y = Math.trunc(pos.y / tileSize);
-
-    const tile = this.map[x + y * (this.size.x / tileSize)];
-
-    if (tile) {
-      return tiles[tile];
-    }
+    const tileSize = 16;
+    return tiles[
+      this.map[
+        Math.trunc(pos.x / tileSize) +
+          Math.trunc(pos.y / tileSize) * (this.size.x / tileSize)
+      ]
+    ];
   }
 
   update(dt: number): void {
     // collide player with map
-    if (this.getTile(this.player.pos)?.collision) {
-      state.moveDisabled = false;
-    } else {
-      state.moveDisabled = false;
-    }
+    //if (this.getTile(this.player.pos)?.collision) {
+    //  this.player.pos = this.player.prevPos;
+    //}
+
+    // aabb collision
+    //this.map.forEach((_, i) => {
+    //  const tileSize = 16;
+    //  const y = (i % (this.size.x / tileSize)) * tileSize;
+    //  const x = Math.trunc(i / (this.size.x / tileSize)) * tileSize;
+    //  const tile = tiles[this.map[i]];
+
+    //  if (tile.collision) {
+    //    if (
+    //      this.player.pos.x < x + tileSize &&
+    //      this.player.pos.x + this.player.size.x > x &&
+    //      this.player.pos.y < y + tileSize &&
+    //      this.player.pos.y + this.player.size.y > y
+    //    ) {
+    //      this.player.pos = this.player.prevPos;
+    //    }
+    //  }
+    //});
 
     // check if child is visible
     if (
@@ -88,10 +103,12 @@ export default class Scene extends GameObject {
           continue;
         }
 
-        renderer.drawTile(
-          tile.id,
-          new Vector2(this.pos.x + x * tileSize, this.pos.y + y * tileSize)
+        const pos = new Vector2(
+          this.pos.x + x * tileSize,
+          this.pos.y + y * tileSize
         );
+
+        renderer.drawTile(tile.id, pos);
       }
     }
   }
