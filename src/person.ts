@@ -1,6 +1,7 @@
 import GameObject from "./gameobject";
 import Renderer from "./renderer";
 import Vector2 from "./vector2";
+import { zzfx } from "zzfx";
 
 export const weaponTypes = {
   basic: {
@@ -8,7 +9,7 @@ export const weaponTypes = {
     speed: 0.5,
     color: "red",
     size: [2, 2],
-    rechargeTime: 50,
+    rechargeTime: 500,
   },
 };
 
@@ -32,12 +33,11 @@ export class Bullet extends GameObject {
     public vel: Vector2,
     public type: WeaponType
   ) {
-    super();
+    super(pos, "bullet");
     this.size = new Vector2(
       weaponTypes[this.type].size[0],
       weaponTypes[this.type].size[1]
     );
-    this.id = "player-bullet";
   }
 
   update(dt: number) {
@@ -67,19 +67,26 @@ export class Bullet extends GameObject {
 export default class Person extends GameObject {
   stats: Stats = new Stats();
   bullets: Bullet[] = [];
+  prevPos: Vector2 = new Vector2(0, 0);
+  wasShot: boolean = false;
 
   constructor(pos: Vector2, id: string) {
-    super();
-    this.pos = pos;
+    super(pos, id);
     this.id = id;
   }
 
-  move(direction: Vector2) {}
+  move(direction: Vector2) {
+    this.prevPos = this.pos.clone();
+    this.pos.add(direction);
+  }
 
   fire(direction: Vector2, dt: number) {
     if (this.stats.recharged > weaponTypes.basic.rechargeTime) {
       let leftGunPos = new Vector2(this.pos.x, this.pos.y + 16);
       let rightGunPos = new Vector2(this.pos.x + 14, this.pos.y + 16);
+      this.wasShot = true;
+
+      this.spriteDirection = direction.clone();
 
       if (direction.y === 0) {
         leftGunPos = new Vector2(this.pos.x, this.pos.y);
@@ -91,9 +98,11 @@ export default class Person extends GameObject {
 
       const bullet = new Bullet(rightGunPos, direction, WeaponType.Basic);
       this.bullets.push(bullet);
+      zzfx(...[, , 537, 0.02, 0.02, 0.22, 1, 1.59, -6.98, 4.97]);
+      this.stats.recharged = 0;
     }
 
-    this.stats.recharged = 0;
+    this.wasShot = false;
   }
 
   update(dt: number) {

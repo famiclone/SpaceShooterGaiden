@@ -3,36 +3,33 @@ import Controller from "./controller";
 import Level from "./level";
 import Logger from "./logger";
 import Renderer from "./renderer";
-import state from "./state";
+import StateStack, {
+  IntroState,
+  LoadingState,
+  PlayingState,
+} from "./state-stack";
 import UIRenderer from "./ui-renderer";
-import Vector2 from "./vector2";
-
-export enum GameState {
-  MENU,
-  PLAYING,
-  PAUSED,
-  GAME_OVER,
-  OPTIONS,
-  LOADING,
-  FLYING,
-  DISEMBARK,
-}
+import state from "./state";
 
 export default class Game {
   logger: Logger;
-  renderer: Renderer = new Renderer();
-  uiRenderer: UIRenderer = new UIRenderer();
-  assetLoader: AssetLoader = new AssetLoader();
+  renderer: Renderer;
+  uiRenderer: UIRenderer;
+  assetLoader: AssetLoader;
   controller: Controller;
-  level: Level = new Level();
-  currentState: GameState = GameState.DISEMBARK
+  stateStack: StateStack;
 
   lastTime: number = 0;
 
   constructor() {
+    this.setTitle("SpaceShooterGaiden");
+
     this.logger = new Logger();
-    this.logger.info("Game started");
-    this.controller = new Controller(this);
+    this.controller = new Controller();
+    this.stateStack = new StateStack();
+    this.renderer = new Renderer();
+    this.uiRenderer = new UIRenderer();
+    this.assetLoader = new AssetLoader();
 
     // @ts-ignore
     window["game"] = this;
@@ -40,75 +37,20 @@ export default class Game {
 
   update(ts: number) {
     const dt = ts - this.lastTime;
-
-    if (this.currentState === GameState.FLYING) {
-      this.level.player.move(new Vector2(0, -1));
-
-      if (this.controller.keyIsDown("KeyA")) {
-        this.level.player.move(new Vector2(-1, 0));
-      }
-
-      if (this.controller.keyIsDown("KeyD")) {
-        this.level.player.move(new Vector2(1, 0));
-      }
-
-      if (this.controller.keyIsDown("Space")) {
-        this.level.player.fire(new Vector2(0, -1), dt);
-      }
-
-      return false;
-    }
-    if (this.controller.keyIsDown("KeyA")) {
-      this.level.player.move(new Vector2(-1, 0));
-    }
-
-    if (this.controller.keyIsDown("KeyD")) {
-      this.level.player.move(new Vector2(1, 0));
-    }
-
-    if (this.controller.keyIsDown("KeyW")) {
-      this.level.player.move(new Vector2(0, -1));
-    }
-
-    if (this.controller.keyIsDown("KeyS")) {
-      this.level.player.move(new Vector2(0, 1));
-    }
-
-    if (this.controller.keyIsDown("KeyI")) {
-      this.level.player.fire(new Vector2(0, -1), dt);
-    }
-
-    if (this.controller.keyIsDown("KeyJ")) {
-      this.level.player.fire(new Vector2(-1, 0), dt);
-    }
-
-    if (this.controller.keyIsDown("KeyK")) {
-      this.level.player.fire(new Vector2(0, 1), dt);
-    }
-
-    if (this.controller.keyIsDown("KeyL")) {
-      this.level.player.fire(new Vector2(1, 0), dt);
-    }
-
     this.lastTime = ts;
 
-    this.level.update(dt);
+    this.stateStack.update(dt);
   }
 
-  changeState(state: GameState) {
-    this.currentState = state;
+  setTitle(title: string) {
+    document.title = title;
   }
 
   render() {
     this.renderer.clear();
     this.uiRenderer.clear();
-    this.uiRenderer.progress(
-      this.level.player.stats.health,
-      this.renderer.windowSize.width - 28,
-      8
-    );
 
-    this.level.render(this.renderer);
+    this.stateStack.render(this.renderer);
   }
 
   run() {
@@ -134,6 +76,8 @@ export default class Game {
         this.uiRenderer.spriteSheetMap = this.assetLoader.list[
           "spritesheet_map"
         ] as any;
+
+        this.stateStack.push(new IntroState(this));
 
         state.game = this;
 

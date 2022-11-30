@@ -1,5 +1,4 @@
 import Game from "./game";
-import Logger from "./logger";
 import Player from "./player";
 
 const approvedKeys = [
@@ -13,17 +12,14 @@ const approvedKeys = [
   "KeyJ",
   "KeyK",
   "KeyL",
+  "Enter",
 ];
 
 export default class Controller {
   keys: { [key: string]: 0 | 1 } = {};
-  game: Game;
-  player: Player;
 
-  constructor(game: Game) {
+  constructor() {
     console.log("Controller created");
-    this.game = game;
-    this.player = game.level.player;
 
     window.addEventListener("keydown", (e) => this.handleKeyDown(e));
     window.addEventListener("keyup", (e) => this.handleKeyUp(e));
@@ -43,8 +39,8 @@ export default class Controller {
     this.keys[e.code] = 0;
   }
 
-  keyIsDown(key: string): boolean {
-    return this.keys[key] === 1 || false;
+  keyIsDown(key: string): number {
+    return this.keys[key];
   }
 
   clearKeys() {
