@@ -64,11 +64,20 @@ export class Bullet extends GameObject {
   }
 }
 
+export enum PersonAction {
+  IDLE = "IDLE",
+  WALK = "WALK",
+  ATTACK = "ATTACK",
+  HIT = "HIT",
+  DIE = "DIE",
+}
+
 export default class Person extends GameObject {
   stats: Stats = new Stats();
   bullets: Bullet[] = [];
   prevPos: Vector2 = new Vector2(0, 0);
   wasShot: boolean = false;
+  action: PersonAction = PersonAction.IDLE;
 
   constructor(pos: Vector2, id: string) {
     super(pos, id);
@@ -81,6 +90,7 @@ export default class Person extends GameObject {
   }
 
   fire(direction: Vector2, dt: number) {
+    this.action = PersonAction.ATTACK;
     if (this.stats.recharged > weaponTypes.basic.rechargeTime) {
       let leftGunPos = new Vector2(this.pos.x, this.pos.y + 16);
       let rightGunPos = new Vector2(this.pos.x + 14, this.pos.y + 16);
@@ -107,9 +117,19 @@ export default class Person extends GameObject {
 
   update(dt: number) {
     this.stats.recharged += dt;
+    this.lastTime += dt;
 
     this.bullets.forEach((bullet) => {
       bullet.update(dt);
     });
+
+    if (this.lastTime > 300) {
+      this.frame += 1;
+
+      if (this.frame > 3) {
+        this.frame = 0;
+      }
+      this.lastTime = 0;
+    }
   }
 }

@@ -1,4 +1,10 @@
-import Person, { Bullet, WeaponType, Stats, weaponTypes } from "./person";
+import Person, {
+  Bullet,
+  WeaponType,
+  Stats,
+  weaponTypes,
+  PersonAction,
+} from "./person";
 import Renderer from "./renderer";
 import state from "./state";
 import { isOutOfScreen } from "./utils";
@@ -16,10 +22,11 @@ export default class Player extends Person {
     this.pos = pos;
     this.prevPos = pos;
     this.stats.health = 50;
-    this.speed = 2;
+    this.speed = 1.8;
   }
 
   move(direction: Vector2) {
+    this.action = PersonAction.WALK;
     this.prevPos = this.pos.clone();
 
     this.spriteDirection = direction.clone();
@@ -91,12 +98,18 @@ export default class Player extends Person {
       }
     }
 
+    const sprite =
+      renderer.spriteSheetMap[`PLAYER_${this.action === PersonAction.ATTACK ? PersonAction.IDLE : this.action}_${spriteDirection}`]
+        .frames[this.frame];
+
+    console.log(this.frame);
+
     renderer.ctx.save();
     renderer.drawSprite(
-      renderer.spriteSheetMap[`PLAYER_${spriteDirection}`].x,
-      renderer.spriteSheetMap[`PLAYER_${spriteDirection}`].y,
-      renderer.spriteSheetMap[`PLAYER_${spriteDirection}`].w,
-      renderer.spriteSheetMap[`PLAYER_${spriteDirection}`].h,
+      sprite.x,
+      sprite.y,
+      sprite.w,
+      sprite.h,
       this.pos.x,
       this.pos.y,
       16,

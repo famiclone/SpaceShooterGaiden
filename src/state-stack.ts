@@ -4,6 +4,7 @@ import Renderer from "./renderer";
 import UIRenderer from "./ui-renderer";
 import Vector2 from "./vector2";
 import { zzfx } from "zzfx";
+import { PersonAction } from "./person";
 
 export class BaseState {
   game: Game;
@@ -185,6 +186,14 @@ export class PlayingState extends BaseState {
       this.game.stateStack.push(new MenuState(this.game));
     }
 
+    if (
+      !this.game.controller.keyIsDown("KeyW") &&
+      !this.game.controller.keyIsDown("KeyS") &&
+      !this.game.controller.keyIsDown("KeyA") &&
+      !this.game.controller.keyIsDown("KeyD")) {
+      this.level.player.action = PersonAction.IDLE
+    }
+
     this.level.update(dt);
   }
   public render(renderer: Renderer) {
@@ -210,7 +219,7 @@ export default class StateStack {
       return;
     }
 
-    this.states[this.states.length - 1].update(dt);
+    this.states.at(-1).update(dt);
   }
 
   render(renderer: Renderer) {

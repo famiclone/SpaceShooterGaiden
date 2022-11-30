@@ -2,16 +2,23 @@ body {
   margin: 0;
   padding: 0;
   background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 main {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 main canvas {
   position: absolute;
+  top:0;
   image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;          
-    image-rendering: -o-crisp-edges;           
-    -ms-interpolation-mode: nearest-neighbor;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
 }
